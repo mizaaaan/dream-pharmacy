@@ -11,7 +11,10 @@ class AdminDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      backgroundColor: AppColors.band,
       appBar: AppBar(
+        backgroundColor: AppColors.navy,
+        foregroundColor: Colors.white,
         title: const Text('Admin Dashboard'),
         actions: [
           IconButton(
@@ -59,18 +62,17 @@ class _DashboardCard extends StatelessWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.line),
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: AppColors.line),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, size: 48, color: AppColors.navy),
             const SizedBox(height: 12),
-            Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
           ],
         ),
       ),
