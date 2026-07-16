@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'product_providers.dart';
 import 'widgets/product_card.dart';
 import '../../auth/presentation/auth_state_provider.dart';
+import '../../cart/presentation/cart_provider.dart';
 
 class ProductListScreen extends ConsumerWidget {
   const ProductListScreen({super.key});
@@ -19,11 +21,38 @@ class ProductListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productsAsync = ref.watch(productListProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
+    final cartCount = ref.watch(cartProvider.select((items) =>
+        items.fold(0, (sum, item) => sum + item.quantity)));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dream Pharmacy'),
         actions: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart_outlined),
+                onPressed: () => context.push('/cart'),
+              ),
+              if (cartCount > 0)
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '$cartCount',
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ),
+                ),
+            ],
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Log out',
@@ -86,7 +115,15 @@ class ProductListScreen extends ConsumerWidget {
                     final product = products[index];
                     return ProductCard(
                       product: product,
-                      onTap: () {},
+                      onTap: () {
+                        ref.read(cartProvider.notifier).addProduct(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product.name} added to cart'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
                     );
                   },
                 );
