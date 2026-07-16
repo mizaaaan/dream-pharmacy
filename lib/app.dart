@@ -9,7 +9,7 @@ class PharmacyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Dream Pharmacy',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
+      theme: AppTheme.light(),
       routerConfig: appRouter,
     );
   }
