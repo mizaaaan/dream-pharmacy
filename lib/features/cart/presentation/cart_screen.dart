@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'cart_provider.dart';
 
 class CartScreen extends ConsumerWidget {
@@ -60,7 +61,7 @@ class CartScreen extends ConsumerWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   FilledButton(
-                    onPressed: () {},
+                    onPressed: () => context.push('/checkout'),
                     child: const Text('Checkout'),
                   ),
                 ],
