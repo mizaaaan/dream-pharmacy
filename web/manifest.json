@@ -1,11 +1,11 @@
 {
-    "name": "codespace",
-    "short_name": "codespace",
+    "name": "Dream Pharmacy",
+    "short_name": "Dream Pharmacy",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#E2231A",
+    "theme_color": "#E2231A",
+    "description": "Dream Pharmacy — To the satisfaction of Almighty",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
