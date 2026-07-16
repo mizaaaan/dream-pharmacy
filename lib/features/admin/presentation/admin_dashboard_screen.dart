@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'inventory_management_screen.dart';
 import 'pending_orders_screen.dart';
 import '../../auth/presentation/auth_state_provider.dart';
+import '../../../core/theme/app_theme.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -56,14 +57,20 @@ class _DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.line),
+      ),
       child: InkWell(
+        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 48, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 12),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
           ],
         ),
       ),

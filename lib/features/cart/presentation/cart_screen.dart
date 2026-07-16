@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'cart_provider.dart';
+import '../../../core/theme/app_theme.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -12,9 +13,18 @@ class CartScreen extends ConsumerWidget {
     final cartNotifier = ref.read(cartProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Cart')),
+      appBar: AppBar(
+        backgroundColor: AppColors.red,
+        foregroundColor: Colors.white,
+        title: const Text('Your Cart'),
+      ),
       body: cartItems.isEmpty
-          ? const Center(child: Text('Your cart is empty.'))
+          ? const Center(
+              child: Text(
+                'Your cart is empty.',
+                style: TextStyle(color: AppColors.inkSoft),
+              ),
+            )
           : ListView.builder(
               padding: const EdgeInsets.all(12),
               itemCount: cartItems.length,
@@ -22,25 +32,39 @@ class CartScreen extends ConsumerWidget {
                 final item = cartItems[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: AppColors.line),
+                  ),
                   child: ListTile(
-                    title: Text(item.product.name),
-                    subtitle: Text('৳${item.product.price.toStringAsFixed(2)} each'),
+                    title: Text(
+                      item.product.name,
+                      style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      '৳${item.product.price.toStringAsFixed(2)} each',
+                      style: const TextStyle(color: AppColors.inkSoft),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove_circle_outline),
+                          icon: const Icon(Icons.remove_circle_outline, color: AppColors.teal),
                           onPressed: () => cartNotifier.updateQuantity(
                               item.product.id, item.quantity - 1),
                         ),
-                        Text('${item.quantity}'),
+                        Text(
+                          '${item.quantity}',
+                          style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold),
+                        ),
                         IconButton(
-                          icon: const Icon(Icons.add_circle_outline),
+                          icon: const Icon(Icons.add_circle_outline, color: AppColors.teal),
                           onPressed: () => cartNotifier.updateQuantity(
                               item.product.id, item.quantity + 1),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.red),
+                          icon: const Icon(Icons.delete_outline, color: AppColors.red),
                           onPressed: () => cartNotifier.removeProduct(item.product.id),
                         ),
                       ],
@@ -58,9 +82,14 @@ class CartScreen extends ConsumerWidget {
                 children: [
                   Text(
                     'Total: ৳${cartNotifier.total.toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: AppColors.teal,
+                    ),
                   ),
                   FilledButton(
+                    style: FilledButton.styleFrom(backgroundColor: AppColors.red),
                     onPressed: () => context.push('/checkout'),
                     child: const Text('Checkout'),
                   ),

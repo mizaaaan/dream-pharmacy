@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../cart/presentation/cart_provider.dart';
 import '../data/order_repository.dart';
 import '../data/prescription_upload_service.dart';
+import '../../../core/theme/app_theme.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -89,55 +90,67 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text('Delivery Address', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Delivery Address', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
           const SizedBox(height: 8),
           TextField(
             controller: _addressController,
             maxLines: 3,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Enter your full delivery address',
-              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: AppColors.paper,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.line),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.line),
+              ),
             ),
           ),
           const SizedBox(height: 24),
-          const Text('Order Summary', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Order Summary', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
           const SizedBox(height: 8),
           ...cartItems.map((item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${item.product.name} x${item.quantity}'),
-                    Text('৳${item.subtotal.toStringAsFixed(2)}'),
+                    Text('${item.product.name} x${item.quantity}', style: TextStyle(color: AppColors.ink)),
+                    Text('৳${item.subtotal.toStringAsFixed(2)}', style: TextStyle(color: AppColors.inkSoft)),
                   ],
                 ),
               )),
-          const Divider(),
+          Divider(color: AppColors.line),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              Text('৳${total.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text('Total', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.ink)),
+              Text('৳${total.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.ink)),
             ],
           ),
           if (needsPrescription) ...[
             const SizedBox(height: 24),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.shade200),
+                color: AppColors.red.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.red.withValues(alpha: 0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Your cart contains prescription-only medicine. Please upload a valid prescription.',
-                    style: TextStyle(color: Colors.red.shade700),
+                    style: TextStyle(color: AppColors.redDark),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
                     onPressed: _pickPrescription,
                     icon: const Icon(Icons.upload_file),
                     label: Text(_prescriptionFileName ?? 'Upload Prescription'),
@@ -148,15 +161,20 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           ],
           if (_error != null) ...[
             const SizedBox(height: 16),
-            Text(_error!, style: const TextStyle(color: Colors.red)),
+            Text(_error!, style: TextStyle(color: AppColors.redDark)),
           ],
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
             child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.red,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
               onPressed: _placing ? null : () => _placeOrder(needsPrescription),
               child: _placing
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                   : const Text('Place Order'),
             ),
           ),

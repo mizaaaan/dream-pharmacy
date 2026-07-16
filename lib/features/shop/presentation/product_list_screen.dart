@@ -5,6 +5,7 @@ import 'product_providers.dart';
 import 'widgets/product_card.dart';
 import '../../auth/presentation/auth_state_provider.dart';
 import '../../cart/presentation/cart_provider.dart';
+import '../../../core/theme/app_theme.dart';
 
 class ProductListScreen extends ConsumerWidget {
   const ProductListScreen({super.key});
@@ -26,6 +27,8 @@ class ProductListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.red,
+        foregroundColor: Colors.white,
         title: const Text('Dream Pharmacy'),
         actions: [
           Stack(
@@ -42,7 +45,7 @@ class ProductListScreen extends ConsumerWidget {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(
-                      color: Colors.red,
+                      color: AppColors.amber,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
