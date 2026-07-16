@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/order_review_provider.dart';
+import '../../../core/theme/app_theme.dart';
 
 class OrderReviewScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic> order;
@@ -43,28 +44,36 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
     final reviewState = ref.watch(orderReviewProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Review Order')),
+      backgroundColor: AppColors.band,
+      appBar: AppBar(
+        backgroundColor: AppColors.navy,
+        foregroundColor: Colors.white,
+        title: const Text('Review Order'),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Customer: $customerName', style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text('Phone: $phone'),
-          Text('Address: $address'),
-          const Divider(height: 32),
-          const Text('Items', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Customer: $customerName', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
+          Text('Phone: $phone', style: const TextStyle(color: AppColors.inkSoft)),
+          Text('Address: $address', style: const TextStyle(color: AppColors.inkSoft)),
+          const Divider(height: 32, color: AppColors.line),
+          const Text('Items', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
           ...items.map((item) {
             final productName = item['products']?['name'] ?? 'Unknown';
-            return Text('${item['quantity']}x $productName — ৳${item['unit_price']}');
+            return Text(
+              '${item['quantity']}x $productName — ৳${item['unit_price']}',
+              style: const TextStyle(color: AppColors.inkSoft),
+            );
           }),
           const SizedBox(height: 8),
-          Text('Total: ৳$total', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const Divider(height: 32),
-          const Text('Prescription', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Total: ৳$total', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.teal)),
+          const Divider(height: 32, color: AppColors.line),
+          const Text('Prescription', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.ink)),
           const SizedBox(height: 8),
           if (_loadingImage)
             const Center(child: CircularProgressIndicator())
           else if (_signedUrl == null)
-            const Text('No prescription attached.')
+            const Text('No prescription attached.', style: TextStyle(color: AppColors.inkSoft))
           else
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -73,9 +82,13 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
           const SizedBox(height: 24),
           TextField(
             controller: _reasonController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Rejection reason (if rejecting)',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: AppColors.navy, width: 2),
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -93,13 +106,14 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
                               );
                           if (mounted) Navigator.of(context).pop();
                         },
-                  style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                  style: OutlinedButton.styleFrom(foregroundColor: AppColors.red),
                   child: const Text('Reject'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: AppColors.teal),
                   onPressed: reviewState.isLoading
                       ? null
                       : () async {

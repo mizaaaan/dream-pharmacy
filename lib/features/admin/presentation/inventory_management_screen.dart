@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'admin_providers.dart';
+import '../../../core/theme/app_theme.dart';
 
 class InventoryManagementScreen extends ConsumerWidget {
   const InventoryManagementScreen({super.key});
@@ -10,13 +11,20 @@ class InventoryManagementScreen extends ConsumerWidget {
     final productsAsync = ref.watch(allProductsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Inventory Management')),
+      backgroundColor: AppColors.band,
+      appBar: AppBar(
+        backgroundColor: AppColors.navy,
+        foregroundColor: Colors.white,
+        title: const Text('Inventory Management'),
+      ),
       body: productsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(child: Text('Error: $e')),
         data: (products) {
           if (products.isEmpty) {
-            return const Center(child: Text('No products yet.'));
+            return const Center(
+              child: Text('No products yet.', style: TextStyle(color: AppColors.inkSoft)),
+            );
           }
           return ListView.builder(
             padding: const EdgeInsets.all(12),
@@ -25,11 +33,19 @@ class InventoryManagementScreen extends ConsumerWidget {
               final p = products[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: const BorderSide(color: AppColors.line),
+                ),
                 child: ListTile(
-                  title: Text(p.name),
-                  subtitle: Text('${p.category} · Stock: ${p.stockQuantity} · ৳${p.price.toStringAsFixed(2)}'),
+                  title: Text(p.name, style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600)),
+                  subtitle: Text(
+                    '${p.category} · Stock: ${p.stockQuantity} · ৳${p.price.toStringAsFixed(2)}',
+                    style: const TextStyle(color: AppColors.inkSoft),
+                  ),
                   trailing: p.prescriptionRequired
-                      ? const Icon(Icons.medical_services, color: Colors.red)
+                      ? const Icon(Icons.medical_services, color: AppColors.amber)
                       : null,
                   onTap: () => _showEditStockDialog(context, ref, p.id, p.name, p.stockQuantity),
                 ),
@@ -39,6 +55,8 @@ class InventoryManagementScreen extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.navy,
+        foregroundColor: Colors.white,
         onPressed: () => _showAddProductDialog(context, ref),
         icon: const Icon(Icons.add),
         label: const Text('Add Medicine'),
@@ -60,6 +78,7 @@ class InventoryManagementScreen extends ConsumerWidget {
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.navy),
             onPressed: () async {
               final newStock = int.tryParse(controller.text) ?? currentStock;
               await ref.read(adminRepositoryProvider).updateStock(productId, newStock);
@@ -103,6 +122,7 @@ class InventoryManagementScreen extends ConsumerWidget {
                   onChanged: (v) => setState(() => category = v ?? 'otc'),
                 ),
                 SwitchListTile(
+                  activeThumbColor: AppColors.navy,
                   title: const Text('Requires Prescription'),
                   value: prescriptionRequired,
                   onChanged: (v) => setState(() => prescriptionRequired = v),
@@ -113,6 +133,7 @@ class InventoryManagementScreen extends ConsumerWidget {
           actions: [
             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
             FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: AppColors.navy),
               onPressed: () async {
                 await ref.read(adminRepositoryProvider).addProduct(
                       name: nameController.text.trim(),
