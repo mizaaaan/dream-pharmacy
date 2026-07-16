@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/order_review_repository.dart';
+
+final orderReviewRepositoryProvider = Provider((ref) => OrderReviewRepository());
+
+final pendingOrdersProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  return ref.watch(orderReviewRepositoryProvider).fetchPendingOrders();
+});
 
 enum ReviewAction { approve, reject }
 
 class OrderReviewNotifier extends AsyncNotifier<void> {
-  final _client = Supabase.instance.client;
-
   @override
-  FutureOr<void> build() {
-    // no initial async work needed
-  }
+  FutureOr<void> build() {}
 
   Future<void> reviewOrder({
     required String orderId,
@@ -19,26 +21,14 @@ class OrderReviewNotifier extends AsyncNotifier<void> {
   }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final adminId = _client.auth.currentUser!.id;
-      await _client.from('orders').update({
-        'status': action == ReviewAction.approve ? 'approved' : 'rejected',
-        'admin_reviewed_by': adminId,
-        'admin_reviewed_at': DateTime.now().toIso8601String(),
-        if (action == ReviewAction.reject)
-          'rejection_reason': rejectionReason ?? 'Prescription invalid',
-      }).eq('id', orderId);
+      final repo = ref.read(orderReviewRepositoryProvider);
+      if (action == ReviewAction.approve) {
+        await repo.approveOrder(orderId);
+      } else {
+        await repo.rejectOrder(orderId, rejectionReason ?? 'Prescription invalid');
+      }
     });
   }
 }
 
-final orderReviewProvider =
-    AsyncNotifierProvider<OrderReviewNotifier, void>(OrderReviewNotifier.new);
-
-final pendingOrdersProvider = StreamProvider.autoDispose((ref) {
-  final client = Supabase.instance.client;
-  return client
-      .from('orders')
-      .stream(primaryKey: ['id'])
-      .eq('status', 'pending_review')
-      .order('created_at');
-});
+final orderReviewProvider = AsyncNotifierProvider<OrderReviewNotifier, void>(OrderReviewNotifier.new);

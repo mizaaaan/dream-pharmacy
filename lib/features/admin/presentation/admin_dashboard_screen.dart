@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'inventory_management_screen.dart';
+import 'pending_orders_screen.dart';
 import '../../auth/presentation/auth_state_provider.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
@@ -36,7 +36,9 @@ class AdminDashboardScreen extends ConsumerWidget {
           _DashboardCard(
             icon: Icons.receipt_long,
             label: 'Pending Orders',
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const PendingOrdersScreen()),
+            ),
           ),
         ],
       ),
