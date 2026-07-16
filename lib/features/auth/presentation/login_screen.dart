@@ -35,15 +35,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   InputDecoration _fieldDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      filled: true,
-      fillColor: AppColors.paper,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.line),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.line),
+      border: const OutlineInputBorder(),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColors.teal, width: 2),
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }
@@ -51,59 +46,69 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.paper,
+      backgroundColor: AppColors.band,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 400),
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Dream Pharmacy',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.ink),
-                ),
-                const SizedBox(height: 32),
-                TextField(
-                  controller: _emailController,
-                  decoration: _fieldDecoration('Email'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _passwordController,
-                  decoration: _fieldDecoration('Password'),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20),
-                if (_error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(_error!, style: TextStyle(color: AppColors.redDark)),
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: AppColors.paper,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.line),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Dream Pharmacy',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 32),
                   ),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Your medicines, delivered.',
+                    style: TextStyle(color: AppColors.inkSoft, fontSize: 13),
+                  ),
+                  const SizedBox(height: 32),
+                  TextField(
+                    controller: _emailController,
+                    decoration: _fieldDecoration('Email'),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: _fieldDecoration('Password'),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+                  if (_error != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(_error!, style: const TextStyle(color: AppColors.red)),
                     ),
-                    onPressed: _loading ? null : _login,
-                    child: _loading
-                        ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Log In'),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: AppColors.red),
+                      onPressed: _loading ? null : _login,
+                      child: _loading
+                          ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Text('Log In'),
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SignupScreen()),
+                  TextButton(
+                    style: TextButton.styleFrom(foregroundColor: AppColors.navy),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SignupScreen()),
+                    ),
+                    child: const Text("Don't have an account? Sign up"),
                   ),
-                  style: TextButton.styleFrom(foregroundColor: AppColors.navy),
-                  child: const Text("Don't have an account? Sign up"),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
