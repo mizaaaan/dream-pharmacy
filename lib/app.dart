@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'core/router/app_router.dart';
+import 'core/theme/app_theme.dart';
 
 class PharmacyApp extends StatelessWidget {
   const PharmacyApp({super.key});
@@ -9,10 +9,7 @@ class PharmacyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Dream Pharmacy',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorSchemeSeed: const Color(0xFF0F9D58),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light,
       routerConfig: appRouter,
     );
   }
