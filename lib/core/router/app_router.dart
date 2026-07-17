@@ -11,6 +11,7 @@ import '../../features/shop/domain/product.dart';
 import '../../features/admin/presentation/admin_dashboard_screen.dart';
 import '../../features/cart/presentation/cart_screen.dart';
 import '../../features/checkout/presentation/checkout_screen.dart';
+import '../../features/orders/presentation/order_history_screen.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<AuthState> _sub;
@@ -46,6 +47,7 @@ final appRouter = GoRouter(
       builder: (c, s) => ProductDetailScreen(product: s.extra as Product),
     ),
     GoRoute(path: '/cart', builder: (c, s) => const CartScreen()),
+    GoRoute(path: '/orders', builder: (c, s) => const OrderHistoryScreen()),
     GoRoute(path: '/checkout', builder: (c, s) => const CheckoutScreen()),
     GoRoute(path: '/admin', builder: (c, s) => const AdminDashboardScreen()),
   ],

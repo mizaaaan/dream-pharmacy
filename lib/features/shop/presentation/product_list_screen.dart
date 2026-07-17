@@ -57,6 +57,11 @@ class ProductListScreen extends ConsumerWidget {
             ],
           ),
           IconButton(
+            icon: const Icon(Icons.receipt_long_outlined),
+            tooltip: 'My Orders',
+            onPressed: () => context.push('/orders'),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Log out',
             onPressed: () => ref.read(authRepositoryProvider).signOut(),
