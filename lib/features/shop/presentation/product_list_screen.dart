@@ -5,6 +5,8 @@ import 'product_providers.dart';
 import 'widgets/product_card.dart';
 import '../../auth/presentation/auth_state_provider.dart';
 import '../../cart/presentation/cart_provider.dart';
+import '../../notifications/presentation/notification_providers.dart';
+import '../../notifications/presentation/notifications_screen.dart';
 import '../../../core/theme/app_theme.dart';
 
 class ProductListScreen extends ConsumerWidget {
@@ -24,6 +26,7 @@ class ProductListScreen extends ConsumerWidget {
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final cartCount = ref.watch(cartProvider.select((items) =>
         items.fold(0, (sum, item) => sum + item.quantity)));
+    final unreadCount = ref.watch(unreadNotificationCountProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -60,6 +63,34 @@ class ProductListScreen extends ConsumerWidget {
             icon: const Icon(Icons.receipt_long_outlined),
             tooltip: 'My Orders',
             onPressed: () => context.push('/orders'),
+          ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined),
+                tooltip: 'Notifications',
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                ),
+              ),
+              if (unreadCount > 0)
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: AppColors.amber,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '$unreadCount',
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ),
+                ),
+            ],
           ),
           IconButton(
             icon: const Icon(Icons.logout),
