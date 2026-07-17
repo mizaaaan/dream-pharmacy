@@ -17,6 +17,17 @@ class CartNotifier extends Notifier<List<CartItem>> {
     }
   }
 
+  void addProductQuantity(Product product, int quantity) {
+    final index = state.indexWhere((item) => item.product.id == product.id);
+    if (index >= 0) {
+      final updated = [...state];
+      updated[index].quantity += quantity;
+      state = updated;
+    } else {
+      state = [...state, CartItem(product: product, quantity: quantity)];
+    }
+  }
+
   void removeProduct(String productId) {
     state = state.where((item) => item.product.id != productId).toList();
   }

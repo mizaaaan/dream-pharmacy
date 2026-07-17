@@ -6,6 +6,8 @@ import 'route_guard.dart';
 import '../../features/auth/domain/app_user.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/shop/presentation/product_list_screen.dart';
+import '../../features/shop/presentation/product_detail_screen.dart';
+import '../../features/shop/domain/product.dart';
 import '../../features/admin/presentation/admin_dashboard_screen.dart';
 import '../../features/cart/presentation/cart_screen.dart';
 import '../../features/checkout/presentation/checkout_screen.dart';
@@ -39,6 +41,10 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/login', builder: (c, s) => const LoginScreen()),
     GoRoute(path: '/', builder: (c, s) => const ProductListScreen()),
+    GoRoute(
+      path: '/product',
+      builder: (c, s) => ProductDetailScreen(product: s.extra as Product),
+    ),
     GoRoute(path: '/cart', builder: (c, s) => const CartScreen()),
     GoRoute(path: '/checkout', builder: (c, s) => const CheckoutScreen()),
     GoRoute(path: '/admin', builder: (c, s) => const AdminDashboardScreen()),

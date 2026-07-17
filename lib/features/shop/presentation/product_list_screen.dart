@@ -118,15 +118,7 @@ class ProductListScreen extends ConsumerWidget {
                     final product = products[index];
                     return ProductCard(
                       product: product,
-                      onTap: () {
-                        ref.read(cartProvider.notifier).addProduct(product);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product.name} added to cart'),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
-                      },
+                      onTap: () => context.push('/product', extra: product),
                     );
                   },
                 );
