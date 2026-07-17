@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
 import 'admin_providers.dart';
 import '../../../core/theme/app_theme.dart';
 
@@ -44,9 +45,30 @@ class InventoryManagementScreen extends ConsumerWidget {
                     '${p.category} · Stock: ${p.stockQuantity} · ৳${p.price.toStringAsFixed(2)}',
                     style: const TextStyle(color: AppColors.inkSoft),
                   ),
-                  trailing: p.prescriptionRequired
-                      ? const Icon(Icons.medical_services, color: AppColors.amber)
-                      : null,
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.band,
+                    backgroundImage: (p.imageUrl != null && p.imageUrl!.isNotEmpty)
+                        ? NetworkImage(p.imageUrl!)
+                        : null,
+                    child: (p.imageUrl == null || p.imageUrl!.isEmpty)
+                        ? const Icon(Icons.medication_outlined, color: AppColors.inkSoft)
+                        : null,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (p.prescriptionRequired)
+                        const Padding(
+                          padding: EdgeInsets.only(right: 4),
+                          child: Icon(Icons.medical_services, color: AppColors.amber),
+                        ),
+                      IconButton(
+                        icon: const Icon(Icons.photo_camera_outlined, color: AppColors.navy),
+                        tooltip: 'Change Photo',
+                        onPressed: () => _pickAndUploadImage(context, ref, p.id),
+                      ),
+                    ],
+                  ),
                   onTap: () => _showEditStockDialog(context, ref, p.id, p.name, p.stockQuantity),
                 ),
               );
@@ -62,6 +84,22 @@ class InventoryManagementScreen extends ConsumerWidget {
         label: const Text('Add Medicine'),
       ),
     );
+  }
+
+  Future<void> _pickAndUploadImage(BuildContext context, WidgetRef ref, String productId) async {
+    final result = await FilePicker.pickFiles(type: FileType.image, withData: true);
+    if (result == null || result.files.isEmpty) return;
+    final file = result.files.first;
+    if (file.bytes == null) return;
+    final ext = (file.extension ?? 'jpg').toLowerCase();
+    final url = await ref.read(adminRepositoryProvider).uploadProductImage(productId, file.bytes!, ext);
+    await ref.read(adminRepositoryProvider).updateProductImage(productId, url);
+    ref.invalidate(allProductsProvider);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Photo updated')),
+      );
+    }
   }
 
   void _showEditStockDialog(BuildContext context, WidgetRef ref, String productId, String name, int currentStock) {

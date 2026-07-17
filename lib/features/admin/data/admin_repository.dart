@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../shop/domain/product.dart';
 
@@ -7,6 +8,22 @@ class AdminRepository {
   Future<List<Product>> fetchAllProducts() async {
     final data = await _client.from('products').select().order('name');
     return (data as List).map((m) => Product.fromMap(m)).toList();
+  }
+
+  Future<String> uploadProductImage(String productId, Uint8List bytes, String fileExt) async {
+    final path = '$productId/${DateTime.now().millisecondsSinceEpoch}.$fileExt';
+    await _client.storage.from('product-images').uploadBinary(
+          path,
+          bytes,
+          fileOptions: const FileOptions(upsert: true),
+        );
+    return _client.storage.from('product-images').getPublicUrl(path);
+  }
+
+  Future<void> updateProductImage(String productId, String imageUrl) async {
+    await _client.from('products').update({
+      'image_url': imageUrl,
+    }).eq('id', productId);
   }
 
   Future<void> addProduct({
@@ -20,6 +37,7 @@ class AdminRepository {
     String? dosageForm,
     String? strength,
     String? manufacturer,
+    String? imageUrl,
   }) async {
     await _client.from('products').insert({
       'name': name,
@@ -32,6 +50,7 @@ class AdminRepository {
       'dosage_form': dosageForm,
       'strength': strength,
       'manufacturer': manufacturer,
+      'image_url': imageUrl,
     });
   }
 
