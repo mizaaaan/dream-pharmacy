@@ -141,22 +141,34 @@ class ProductListScreen extends ConsumerWidget {
                 if (products.isEmpty) {
                   return const Center(child: Text('No medicines found.'));
                 }
-                return GridView.builder(
-                  padding: const EdgeInsets.all(12),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 220,
-                    childAspectRatio: 0.85,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return ProductCard(
-                      product: product,
-                      onTap: () => context.push('/product', extra: product),
-                    );
+                final notifier = ref.read(productListProvider.notifier);
+                return NotificationListener<ScrollNotification>(
+                  onNotification: (scrollInfo) {
+                    if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                      notifier.loadMore();
+                    }
+                    return false;
                   },
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(12),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 220,
+                      childAspectRatio: 0.85,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemCount: products.length + (notifier.hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= products.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final product = products[index];
+                      return ProductCard(
+                        product: product,
+                        onTap: () => context.push('/product', extra: product),
+                      );
+                    },
+                  ),
                 );
               },
             ),
