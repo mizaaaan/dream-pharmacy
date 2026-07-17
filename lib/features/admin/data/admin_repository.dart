@@ -50,4 +50,10 @@ class AdminRepository {
   Future<void> deleteProduct(String productId) async {
     await _client.from('products').delete().eq('id', productId);
   }
+  Future<void> inviteAdmin(String email) async {
+    await _client.from('admin_invites').insert({
+      'email': email,
+      'invited_by': _client.auth.currentUser!.id,
+    });
+  }
 }

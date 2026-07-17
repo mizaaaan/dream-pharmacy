@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'inventory_management_screen.dart';
 import 'pending_orders_screen.dart';
+import 'invite_admin_screen.dart';
 import '../../auth/presentation/auth_state_provider.dart';
 import '../../../core/theme/app_theme.dart';
 
@@ -42,6 +43,13 @@ class AdminDashboardScreen extends ConsumerWidget {
             label: 'Pending Orders',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const PendingOrdersScreen()),
+            ),
+          ),
+          _DashboardCard(
+            icon: Icons.person_add,
+            label: 'Invite Admin',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const InviteAdminScreen()),
             ),
           ),
         ],
