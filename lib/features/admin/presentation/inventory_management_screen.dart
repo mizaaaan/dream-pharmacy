@@ -48,11 +48,6 @@ class InventoryManagementScreen extends ConsumerWidget {
               final p = products[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: const BorderSide(color: AppColors.line),
-                ),
                 child: ListTile(
                   title: Text(p.name, style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600)),
                   subtitle: Text(

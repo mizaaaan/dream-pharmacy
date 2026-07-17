@@ -33,11 +33,6 @@ class CartScreen extends ConsumerWidget {
                 final atMaxStock = item.quantity >= item.product.stockQuantity;
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: const BorderSide(color: AppColors.line),
-                  ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Column(

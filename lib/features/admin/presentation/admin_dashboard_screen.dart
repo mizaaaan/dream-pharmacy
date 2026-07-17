@@ -68,12 +68,8 @@ class _DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: AppColors.line),
-      ),
       child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadius.card),
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -93,11 +93,7 @@ class OrderHistoryScreen extends ConsumerWidget {
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 10),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: const BorderSide(color: AppColors.line),
-                  ),
+                  clipBehavior: Clip.antiAlias,
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),

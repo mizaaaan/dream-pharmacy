@@ -107,9 +107,7 @@ class ProductListScreen extends ConsumerWidget {
             child: TextField(
               decoration: const InputDecoration(
                 hintText: 'Search medicines...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-                isDense: true,
+                prefixIcon: Icon(Icons.search, color: AppColors.inkSoft),
               ),
               onChanged: (value) => ref.read(searchQueryProvider.notifier).set(value),
             ),

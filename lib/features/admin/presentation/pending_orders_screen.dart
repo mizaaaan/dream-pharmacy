@@ -52,11 +52,6 @@ class PendingOrdersScreen extends ConsumerWidget {
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: const BorderSide(color: AppColors.line),
-                ),
                 child: ListTile(
                   title: Text(customerName, style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600)),
                   subtitle: Text('${items.length} item(s) · ৳$total', style: const TextStyle(color: AppColors.inkSoft)),

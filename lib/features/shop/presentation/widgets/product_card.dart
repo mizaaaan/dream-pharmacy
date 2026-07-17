@@ -11,11 +11,6 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.line),
-      ),
       child: InkWell(
         onTap: onTap,
         child: Padding(
@@ -37,10 +32,10 @@ class ProductCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.red.withValues(alpha: 0.1),
+                        color: AppColors.amber.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text('Rx', style: TextStyle(color: AppColors.redDark, fontSize: 11, fontWeight: FontWeight.bold)),
+                      child: Text('Rx', style: TextStyle(color: AppColors.amber, fontSize: 11, fontWeight: FontWeight.bold)),
                     ),
                 ],
               ),
@@ -58,7 +53,7 @@ class ProductCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('৳${product.price.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.ink)),
+                  Text('৳${product.price.toStringAsFixed(2)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.teal)),
                   Text(
                     product.inStock ? 'In stock' : 'Out of stock',
                     style: TextStyle(
