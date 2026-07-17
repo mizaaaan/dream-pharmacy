@@ -30,6 +30,7 @@ class CartScreen extends ConsumerWidget {
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
                 final item = cartItems[index];
+                final atMaxStock = item.quantity >= item.product.stockQuantity;
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
                   elevation: 0,
@@ -37,36 +38,54 @@ class CartScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     side: const BorderSide(color: AppColors.line),
                   ),
-                  child: ListTile(
-                    title: Text(
-                      item.product.name,
-                      style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(
-                      '৳${item.product.price.toStringAsFixed(2)} each',
-                      style: const TextStyle(color: AppColors.inkSoft),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle_outline, color: AppColors.teal),
-                          onPressed: () => cartNotifier.updateQuantity(
-                              item.product.id, item.quantity - 1),
+                        ListTile(
+                          title: Text(
+                            item.product.name,
+                            style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            '৳${item.product.price.toStringAsFixed(2)} each',
+                            style: const TextStyle(color: AppColors.inkSoft),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.remove_circle_outline, color: AppColors.teal),
+                                onPressed: () => cartNotifier.updateQuantity(
+                                    item.product.id, item.quantity - 1),
+                              ),
+                              Text(
+                                '${item.quantity}',
+                                style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.add_circle_outline, color: AppColors.teal),
+                                onPressed: atMaxStock
+                                    ? null
+                                    : () => cartNotifier.updateQuantity(
+                                        item.product.id, item.quantity + 1),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline, color: AppColors.red),
+                                onPressed: () => cartNotifier.removeProduct(item.product.id),
+                              ),
+                            ],
+                          ),
                         ),
-                        Text(
-                          '${item.quantity}',
-                          style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline, color: AppColors.teal),
-                          onPressed: () => cartNotifier.updateQuantity(
-                              item.product.id, item.quantity + 1),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline, color: AppColors.red),
-                          onPressed: () => cartNotifier.removeProduct(item.product.id),
-                        ),
+                        if (atMaxStock)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 16, bottom: 8),
+                            child: Text(
+                              'Max available stock reached',
+                              style: TextStyle(color: AppColors.amber, fontSize: 11),
+                            ),
+                          ),
                       ],
                     ),
                   ),

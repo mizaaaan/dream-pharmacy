@@ -10,27 +10,24 @@ class OrderRepository {
     required bool requiresPrescriptionReview,
   }) async {
     final userId = _client.auth.currentUser!.id;
-    final total = items.fold(0.0, (sum, item) => sum + item.subtotal);
 
-    final orderData = await _client.from('orders').insert({
-      'customer_id': userId,
-      'status': 'pending_review',
-      'total_amount': total,
-      'delivery_address': deliveryAddress,
-      'requires_prescription_review': requiresPrescriptionReview,
-    }).select().single();
+    final itemsPayload = items
+        .map((item) => {
+              'product_id': item.product.id,
+              'quantity': item.quantity,
+              'unit_price': item.product.price,
+            })
+        .toList();
 
-    final orderId = orderData['id'] as String;
+    // place_order is a Postgres function that validates stock, creates the
+    // order + order_items, and decrements stock atomically in one transaction.
+    final orderId = await _client.rpc('place_order', params: {
+      'p_customer_id': userId,
+      'p_delivery_address': deliveryAddress,
+      'p_requires_prescription_review': requiresPrescriptionReview,
+      'p_items': itemsPayload,
+    });
 
-    final orderItems = items.map((item) => {
-          'order_id': orderId,
-          'product_id': item.product.id,
-          'quantity': item.quantity,
-          'unit_price': item.product.price,
-        }).toList();
-
-    await _client.from('order_items').insert(orderItems);
-
-    return orderId;
+    return orderId as String;
   }
 }

@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../cart/presentation/cart_provider.dart';
 import '../data/order_repository.dart';
 import '../data/prescription_upload_service.dart';
@@ -72,6 +73,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         );
         context.go('/');
       }
+    } on PostgrestException catch (e) {
+      // Raised by the place_order() database function — e.g. "Insufficient
+      // stock for Napa Extra 500mg: requested 5, only 2 available".
+      setState(() => _error = e.message);
     } catch (e) {
       setState(() => _error = 'Failed to place order: $e');
     } finally {
@@ -176,7 +181,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           ],
           if (_error != null) ...[
             const SizedBox(height: 16),
-            Text(_error!, style: const TextStyle(color: AppColors.red)),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.red.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(_error!, style: const TextStyle(color: AppColors.red)),
+            ),
           ],
           const SizedBox(height: 24),
           SizedBox(
