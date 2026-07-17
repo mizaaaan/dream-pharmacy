@@ -27,10 +27,24 @@ class InventoryManagementScreen extends ConsumerWidget {
               child: Text('No products yet.', style: TextStyle(color: AppColors.inkSoft)),
             );
           }
-          return ListView.builder(
+          final notifier = ref.read(allProductsProvider.notifier);
+          return NotificationListener<ScrollNotification>(
+            onNotification: (scrollInfo) {
+              if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                notifier.loadMore();
+              }
+              return false;
+            },
+            child: ListView.builder(
             padding: const EdgeInsets.all(12),
-            itemCount: products.length,
+            itemCount: products.length + (notifier.hasMore ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index >= products.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
               final p = products[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
@@ -73,6 +87,7 @@ class InventoryManagementScreen extends ConsumerWidget {
                 ),
               );
             },
+          ),
           );
         },
       ),

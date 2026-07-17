@@ -63,13 +63,27 @@ class OrderHistoryScreen extends ConsumerWidget {
               child: Text("You haven't placed any orders yet.", style: TextStyle(color: AppColors.inkSoft)),
             );
           }
+          final notifier = ref.read(myOrdersProvider.notifier);
           return RefreshIndicator(
             color: AppColors.red,
             onRefresh: () async => ref.invalidate(myOrdersProvider),
-            child: ListView.builder(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                  notifier.loadMore();
+                }
+                return false;
+              },
+              child: ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: orders.length,
+              itemCount: orders.length + (notifier.hasMore ? 1 : 0),
               itemBuilder: (context, index) {
+                if (index >= orders.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
                 final order = orders[index];
                 final status = _statusInfo(order['status'] as String? ?? 'pending_review');
                 final items = order['order_items'] as List;
@@ -154,6 +168,7 @@ class OrderHistoryScreen extends ConsumerWidget {
                   ),
                 );
               },
+            ),
             ),
           );
         },

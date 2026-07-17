@@ -5,8 +5,10 @@ import '../../shop/domain/product.dart';
 class AdminRepository {
   final _client = Supabase.instance.client;
 
-  Future<List<Product>> fetchAllProducts() async {
-    final data = await _client.from('products').select().order('name');
+  Future<List<Product>> fetchAllProducts({int page = 0, int pageSize = 20}) async {
+    final from = page * pageSize;
+    final to = from + pageSize - 1;
+    final data = await _client.from('products').select().order('name').range(from, to);
     return (data as List).map((m) => Product.fromMap(m)).toList();
   }
 
