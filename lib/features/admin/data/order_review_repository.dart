@@ -3,12 +3,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class OrderReviewRepository {
   final _client = Supabase.instance.client;
 
-  Future<List<Map<String, dynamic>>> fetchPendingOrders() async {
+  Future<List<Map<String, dynamic>>> fetchPendingOrders({int page = 0, int pageSize = 15}) async {
+    final from = page * pageSize;
+    final to = from + pageSize - 1;
     final data = await _client
         .from('orders')
         .select('*, users!orders_customer_id_fkey(full_name, phone), order_items(*, products(name)), prescriptions(*)')
         .eq('status', 'pending_review')
-        .order('created_at');
+        .order('created_at')
+        .range(from, to);
     return List<Map<String, dynamic>>.from(data);
   }
 

@@ -27,10 +27,24 @@ class PendingOrdersScreen extends ConsumerWidget {
               child: Text('No pending orders.', style: TextStyle(color: AppColors.inkSoft)),
             );
           }
-          return ListView.builder(
+          final notifier = ref.read(pendingOrdersProvider.notifier);
+          return NotificationListener<ScrollNotification>(
+            onNotification: (scrollInfo) {
+              if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                notifier.loadMore();
+              }
+              return false;
+            },
+            child: ListView.builder(
             padding: const EdgeInsets.all(12),
-            itemCount: orders.length,
+            itemCount: orders.length + (notifier.hasMore ? 1 : 0),
             itemBuilder: (context, index) {
+              if (index >= orders.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
               final order = orders[index];
               final customerName = order['users']?['full_name'] ?? 'Unknown';
               final items = order['order_items'] as List;
@@ -56,6 +70,7 @@ class PendingOrdersScreen extends ConsumerWidget {
                 ),
               );
             },
+            ),
           );
         },
       ),
